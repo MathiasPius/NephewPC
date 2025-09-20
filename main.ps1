@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 if(!$IsUpdated) {
     Write-Host "Downloading newest version.."
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/main.ps1 -OutFile main.ps1
-    Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/doh.ps1 -OutFile doh.ps1
+    Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/doh.bat -OutFile doh.bat
     & ".\main.ps1" $Command 1
     Exit
 }
