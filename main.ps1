@@ -24,6 +24,10 @@ if (!$LocalUser) {
     New-LocalUser "Bruger" -AccountNeverExpires -NoPassword -UserMayNotChangePassword
 }
 
+# Initialize local user
+$Creds = [System.Management.Automation.PSCredential] ($LocalUser, (New-Object System.Security.SecureString))
+Start-Process "cmd.exe" -Credential $Creds -ArgumentList "/C"
+
 switch ($Command) {
     "restore" {
         # Enable restore points (https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/enable-computerrestore?view=powershell-5.1)
