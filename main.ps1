@@ -17,7 +17,7 @@ if(!$IsUpdated) {
 }
 
 # Create the local non-admin user if it does not exist.
-$LocalUser = Get-LocalUser | Where-Object { $_.Name -ne "Admin" }
+$LocalUser = Get-LocalUser | Where-Object { $_.Name -ne "Admin" } | Where-Object { $_.Enabled }
 if (!$LocalUser) {
     Write-Host "Creating local user, since none was found."
     New-LocalUser "Bruger" -AccountNeverExpires -NoPassword -UserMayNotChangePassword
