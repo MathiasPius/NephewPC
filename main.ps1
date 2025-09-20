@@ -30,6 +30,12 @@ switch ($Command) {
         winget install --disable-interactivity --scope machine "Brave.Brave"
         winget install --disable-interactivity --scope machine "Brave.BraveUpdater"
     }
+    "update" {
+        Install-Module -Name PSWindowsUpdate -Force
+        Get-WindowsUpdate
+        Install-WindowsUpdate
+        winget upgrade --scope machine --all --force
+    }
     default {
         Write-Host "Unknown Command: $Command"
     }
