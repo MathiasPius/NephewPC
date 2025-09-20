@@ -3,6 +3,8 @@ param(
     [bool]$IsUpdated=0
 )
 
+$ErrorActionPreference = "Stop"
+
 # We use this optional boolean flag to always re-download the script,
 # unless otherwise specified, and then rerun the newly downloaded version.
 #
@@ -10,6 +12,7 @@ param(
 if(!$IsUpdated) {
     Write-Host "Downloading newest version.."
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/main.ps1 -OutFile main.ps1
+    Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/doh.ps1 -OutFile doh.ps1
     & ".\main.ps1" $Command 1
     Exit
 }
@@ -50,16 +53,16 @@ switch ($Command) {
         irm https://get.activated.win | iex
     }
     "dns" {
-        # Mullvad Family DNS: https://mullvad.net/en/help/dns-over-https-and-dns-over-tls#win11
-        Get-DNSClientDohServerAddress
-        Add-DnsClientDohServerAddress -ServerAddress "194.242.2.6" -DohTemplate "https://family.dns.mullvad.net" -AllowFallbackToUdp $False -AutoUpgrade $True
-        ipconfig /flushdns
+        # https://www.elevenforum.com/t/how-to-set-dns-over-https-via-command-prompt.1232/#post-31002
+        cmd.exe /c '.\doh.bat'
 
         # https://github.com/austin-lai/Windows_Enable_DNS_over_HTTPS?tab=readme-ov-file#method-2---enable-dns-over-https-using-powershell-command
         New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows NT\" -Name DNSClient -ErrorAction Ignore | Out-Null
         New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient\" -Name "DoHPolicy" -Value 3 -PropertyType DWord -Force -ErrorAction Ignore | Out-Null
         Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient\" -Name "DoHPolicy" -Value 3 -Type DWord -Force | Out-Null
         gpupdate.exe /force
+
+        ipconfig /flushdns
     }
     default {
         Write-Host "Unknown Command: $Command"
