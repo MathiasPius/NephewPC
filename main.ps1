@@ -31,9 +31,13 @@ switch ($Command) {
         Checkpoint-Computer -Description "Before Setup"
     }
     "debloat" {
+        # Our non-admin user does not have a password, and we can't initialize
+        # their directory without explicitly allowing blank passwords.
+        Set-ItemProperty -Path "HKLM:System\CurrentControlSet\Control\Lsa" -Name "LimitBlankPasswordUse" -Value "0"
+
         # Initialize local user
         $Creds = New-Object System.Management.Automation.PSCredential($LocalUser, (New-Object System.Security.SecureString))
-        Start-Process "cmd.exe" -Credential $Creds -ArgumentList "/C"
+        Start-Process -WorkingDirectory "C:\" -Filepath "C:\Windows\System32\cmd.exe" -Credential $Creds -ArgumentList "/C"
 
         & ([scriptblock]::Create((irm "https://debloat.raphi.re/"))) -Sysprep -User $LocalUser
     }
