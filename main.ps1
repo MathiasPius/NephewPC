@@ -11,7 +11,8 @@ $ErrorActionPreference = "Stop"
 # This just makes it a lot easier to iterate across computers.
 if(!$IsUpdated) {
     Write-Host "Downloading newest version.."
-    Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/main.ps1 -OutFile main.ps1
+    $RandomId = Get-Random
+    Invoke-WebRequest -Headers @{"Cache-Control" = "no-cache"} -Uri "https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/main.ps1?$RandomId" -OutFile main.ps1
     & ".\main.ps1" $Command 1
     Exit
 }
