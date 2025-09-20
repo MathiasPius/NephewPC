@@ -1,0 +1,2 @@
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/update.ps1 -OutFile update.ps1
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/setup.ps1 -OutFile setup.ps1
