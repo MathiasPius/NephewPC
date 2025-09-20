@@ -12,7 +12,6 @@ $ErrorActionPreference = "Stop"
 if(!$IsUpdated) {
     Write-Host "Downloading newest version.."
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/main.ps1 -OutFile main.ps1
-    Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/doh.bat -OutFile doh.bat
     & ".\main.ps1" $Command 1
     Exit
 }
@@ -54,7 +53,16 @@ switch ($Command) {
     }
     "dns" {
         # https://www.elevenforum.com/t/how-to-set-dns-over-https-via-command-prompt.1232/#post-31002
-        cmd.exe /c '.\doh.bat'
+        $i = Get-NetAdapter -Physical
+        $i | Get-DnsClientServerAddress -AddressFamily IPv4 | Set-DnsClientServerAddress -ServerAddresses '194.242.2.6', '1.1.1.3'
+        $i | Get-DnsClientServerAddress -AddressFamily IPv6 | Set-DnsClientServerAddress -ServerAddresses '2a07:e340::6', '2606:4700:4700::1113'
+        $i | ForEach-Object {
+            $s1 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh\194.242.2.6'; New-Item -Path $s1 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType Qword
+            $s2 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh\1.1.1.3'; New-Item -Path $s2 -Force  | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType Qword
+            $s3 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh6\2a07:e340::6'; New-Item -Path $s3 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType Qword
+            $s4 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh6\2606:4700:4700::1113'; New-Item -Path $s4 -Force  | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType Qword
+        }
+        Clear-DnsClientCache;
 
         # https://github.com/austin-lai/Windows_Enable_DNS_over_HTTPS?tab=readme-ov-file#method-2---enable-dns-over-https-using-powershell-command
         New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows NT\" -Name DNSClient -ErrorAction Ignore | Out-Null
