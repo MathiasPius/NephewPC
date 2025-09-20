@@ -39,6 +39,17 @@ switch ($Command) {
     "activate" {
         irm https://get.activated.win | iex
     }
+    "dns" {
+        # Mullvad Family DNS: https://mullvad.net/en/help/dns-over-https-and-dns-over-tls#win11
+        Add-DnsClientDohServerAddress -ServerAddress 194.242.2.6 -DohTemplate "https://family.dns.mullvad.net" -AllowFallbackToUdp $False -AutoUpgrade $True
+        ipconfig /flushdns
+
+        # https://github.com/austin-lai/Windows_Enable_DNS_over_HTTPS?tab=readme-ov-file#method-2---enable-dns-over-https-using-powershell-command
+        New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows NT\" -Name DNSClient -ErrorAction Ignore | Out-Null
+        New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient\" -Name "DoHPolicy" -Value 3 -PropertyType DWord -Force -ErrorAction Ignore | Out-Null
+        Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient\" -Name "DoHPolicy" -Value 3 -Type DWord -Force | Out-Null
+        gpupdate.exe /force
+    }
     default {
         Write-Host "Unknown Command: $Command"
     }
