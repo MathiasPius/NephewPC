@@ -10,6 +10,11 @@ if(!$IsUpdated) {
     Exit
 }
 
+$LocalUser = Get-LocalUser | Where-Object { $_.Name -ne "Admin" }
+if (!$LocalUser) {
+    Write-Host "Creating local user, since none was found."
+    New-LocalUser "Bruger" -AccountNeverExpires -NoPassword -UserMayNotChangePassword
+}
 
 switch ($Command) {
     "setup" {
@@ -18,7 +23,7 @@ switch ($Command) {
         Checkpoint-Computer -Description "Before Setup"
     }
     "debloat" {
-        & ([scriptblock]::Create((irm "https://debloat.raphi.re/")))
+        & ([scriptblock]::Create((irm "https://debloat.raphi.re/"))) -Sysprep -User $LocalUser
     }
     "apps" {
         # Install browser
