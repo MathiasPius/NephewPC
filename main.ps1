@@ -51,6 +51,7 @@ switch ($Command) {
     }
     "dns" {
         # Mullvad Family DNS: https://mullvad.net/en/help/dns-over-https-and-dns-over-tls#win11
+        Get-DNSClientDohServerAddress
         Add-DnsClientDohServerAddress -ServerAddress "194.242.2.6" -DohTemplate "https://family.dns.mullvad.net" -AllowFallbackToUdp $False -AutoUpgrade $True
         ipconfig /flushdns
 
