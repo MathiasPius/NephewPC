@@ -22,8 +22,8 @@ switch ($Command) {
     }
     "apps" {
         # Install browser
-        winget install --scope machine "Brave.Brave"
-        winget install --scope machine "Brave.BraveUpdater"
+        winget install --disable-interactivity --scope machine "Brave.Brave"
+        winget install --disable-interactivity --scope machine "Brave.BraveUpdater"
     }
     default {
         Write-Host "Unknown Command: $Command"
