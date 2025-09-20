@@ -3,6 +3,10 @@ param(
     [bool]$IsUpdated=0
 )
 
+# We use this optional boolean flag to always re-download the script,
+# unless otherwise specified, and then rerun the newly downloaded version.
+#
+# This just makes it a lot easier to iterate across computers.
 if(!$IsUpdated) {
     Write-Host "Downloading newest version.."
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/MathiasPius/NephewPC/refs/heads/main/main.ps1 -OutFile main.ps1
@@ -10,6 +14,7 @@ if(!$IsUpdated) {
     Exit
 }
 
+# Create the local non-admin user if it does not exist.
 $LocalUser = Get-LocalUser | Where-Object { $_.Name -ne "Admin" }
 if (!$LocalUser) {
     Write-Host "Creating local user, since none was found."
