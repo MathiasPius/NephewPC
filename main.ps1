@@ -17,7 +17,7 @@ if (!$LocalUser) {
 }
 
 switch ($Command) {
-    "setup" {
+    "restore" {
         # Enable restore points (https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/enable-computerrestore?view=powershell-5.1)
         Enable-ComputerRestore -Drive "C:\"
         Checkpoint-Computer -Description "Before Setup"
@@ -35,6 +35,9 @@ switch ($Command) {
         Get-WindowsUpdate
         Install-WindowsUpdate
         winget upgrade --scope machine --all --force
+    }
+    "activate" {
+        irm https://get.activated.win | iex
     }
     default {
         Write-Host "Unknown Command: $Command"
