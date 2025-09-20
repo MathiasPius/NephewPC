@@ -64,6 +64,11 @@ switch ($Command) {
         }
         Clear-DnsClientCache;
 
+        Add-DnsClientDohServerAddress -ServerAddress "194.242.2.6" -DohTemplate "https://family.dns.mullvad.net" -AllowFallbackToUdp $False -AutoUpgrade $True
+        Add-DnsClientDohServerAddress -ServerAddress "2a07:e340::6" -DohTemplate "https://family.dns.mullvad.net" -AllowFallbackToUdp $False -AutoUpgrade $True
+        Add-DnsClientDohServerAddress -ServerAddress "1.1.1.3" -DohTemplate "https://family.cloudflare-dns.com" -AllowFallbackToUdp $False -AutoUpgrade $True
+        Add-DnsClientDohServerAddress -ServerAddress "2606:4700:4700::1113" -DohTemplate "https://family.cloudflare-dns.com" -AllowFallbackToUdp $False -AutoUpgrade $True
+
         # https://github.com/austin-lai/Windows_Enable_DNS_over_HTTPS?tab=readme-ov-file#method-2---enable-dns-over-https-using-powershell-command
         New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows NT\" -Name DNSClient -ErrorAction Ignore | Out-Null
         New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\DNSClient\" -Name "DoHPolicy" -Value 3 -PropertyType DWord -Force -ErrorAction Ignore | Out-Null
